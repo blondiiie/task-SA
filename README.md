@@ -98,44 +98,29 @@ Accept: application/json
 
 ```mermaid
 graph TD
-    %% Источники событий
     subgraph Event_Sources [1. Источники событий]
         OrderService(Сервис Заказов)
         CartService(Сервис Корзины)
         PromoPanel(Маркетинговая панель)
-    end
-
-    %% Брокер сообщений
-    Broker{"2. Брокер сообщений(Kafka / RabbitMQ)"}
-
-    %% Ядро системы уведомлений
-    subgraph Notification_Core ["3. Микросервис Уведомлений (Push Service)"]
+    end 
+    Broker{"2. Брокер сообщений"}
+    subgraph Notifications ["3. Пуш-сервис"]
         PushApp[Логика маршрутизации и шаблонизации]
-        TokenDB[("4. БД Токенов\nустройств")]
+        TokenDB[("4. БД Токенов устройств")]
     end
-
-    %% Облачные провайдеры
-    subgraph Cloud_Providers [5. Провайдеры доставки]
-        APNS["Apple Push Notification service (iOS)"]
-        FCM["Firebase Cloud Messaging (Android)"]
+    subgraph Providers [5. Провайдеры доставки]
+        APNS["APNS (iOS)"]
+        FCM["FCM (Android)"]
     end
-
-    %% Клиент
     MobileApp(("6. Мобильное приложение"))
-
-    %% Связи (Поток данных)
     OrderService -- "Событие: заказ отменен" --> Broker
     CartService -- "Событие: брошенная корзина" --> Broker
     PromoPanel -- "Событие: промо-рассылка" --> Broker
-
     Broker -- "Чтение очереди событий" --> PushApp
-    
     MobileApp -. "Регистрация/Обновление push-токена" .-> PushApp
     PushApp <-->|Запрос токена по UserID| TokenDB
-
     PushApp -- "HTTP/2 запрос с payload" --> APNS
     PushApp -- "HTTP запрос с payload" --> FCM
-
     APNS -- "Доставка Push" --> MobileApp
     FCM -- "Доставка Push" --> MobileApp
 ```
