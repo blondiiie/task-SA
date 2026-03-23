@@ -99,14 +99,14 @@ Accept: application/json
 ```mermaid
 graph TD
     subgraph Event_Sources [1. Источники событий]
-        OrderService(Сервис Заказов)
-        CartService(Сервис Корзины)
+        OrderService(Сервис заказов)
+        CartService(Сервис корзины)
         PromoPanel(Маркетинговая панель)
     end 
     Broker{"2. Брокер сообщений"}
     subgraph Notifications ["3. Пуш-сервис"]
         PushApp[Логика маршрутизации и шаблонизации]
-        TokenDB[("4. БД Токенов устройств")]
+        TokenDB[("4. БД токенов устройств")]
     end
     subgraph Providers [5. Провайдеры доставки]
         APNS["APNS (iOS)"]
